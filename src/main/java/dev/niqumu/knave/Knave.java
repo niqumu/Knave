@@ -1,17 +1,57 @@
 package dev.niqumu.knave;
 
+import dev.niqumu.knave.checks.CheckManager;
+import dev.niqumu.knave.listener.PlayerListener;
+import dev.niqumu.knave.networking.NetworkManager;
+import dev.niqumu.knave.player.PlayerManager;
+import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class Knave extends JavaPlugin {
+/**
+ * @author niqumu
+ */
+public class Knave extends JavaPlugin {
 
-    @Override
-    public void onEnable() {
-        // Plugin startup logic
+	public static final String VERSION = "0.0.1";
+	public static final String CHAT_PREFIX = "§7[§4K§8nave§7]";
 
-    }
+	public static Knave INSTANCE;
 
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
+	@Getter
+	private PlayerListener playerListener;
+
+	@Getter
+	private PlayerManager playerManager;
+
+	@Getter
+	private CheckManager checkManager;
+
+	@Getter
+	private NetworkManager networkManager;
+
+	@Override
+	public void onEnable() {
+		INSTANCE = this;
+
+		this.playerListener = new PlayerListener();
+		this.playerManager = new PlayerManager();
+		this.checkManager = new CheckManager();
+		this.networkManager = new NetworkManager();
+
+		broadcast("Enabled Knave version " + VERSION);
+	}
+
+	@Override
+	public void onDisable() {
+		Bukkit.getOnlinePlayers().forEach(this.networkManager::ejectPlayer);
+	}
+
+	public static void log(Object message) {
+		Bukkit.getServer().getConsoleSender().sendMessage(CHAT_PREFIX + " §f" + message.toString());
+	}
+
+	public static void broadcast(Object message) {
+		Bukkit.getServer().broadcast(CHAT_PREFIX + " §f" + message.toString(), "bukkit.broadcast.admin");
+	}
 }

@@ -1,2 +1,4 @@
-package dev.niqumu.knave.player;public class PlayerData {
+package dev.niqumu.knave.player;
+
+public class PlayerData {
 }
