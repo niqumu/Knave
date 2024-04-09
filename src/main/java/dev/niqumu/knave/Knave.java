@@ -1,6 +1,6 @@
 package dev.niqumu.knave;
 
-import dev.niqumu.knave.checks.CheckManager;
+import dev.niqumu.knave.check.CheckManager;
 import dev.niqumu.knave.listener.PlayerListener;
 import dev.niqumu.knave.networking.NetworkManager;
 import dev.niqumu.knave.player.PlayerManager;
@@ -47,11 +47,13 @@ public class Knave extends JavaPlugin {
 		Bukkit.getOnlinePlayers().forEach(this.networkManager::ejectPlayer);
 	}
 
-	public static void log(Object message) {
-		Bukkit.getServer().getConsoleSender().sendMessage(CHAT_PREFIX + " §f" + message.toString());
+	public static void log(Object message, Object... args) {
+		Bukkit.getServer().getConsoleSender().sendMessage(CHAT_PREFIX + " §f" +
+			String.format(message.toString(), args));
 	}
 
-	public static void broadcast(Object message) {
-		Bukkit.getServer().broadcast(CHAT_PREFIX + " §f" + message.toString(), "bukkit.broadcast.admin");
+	public static void broadcast(Object message, Object... args) {
+		Bukkit.getServer().broadcast(CHAT_PREFIX + " §f" +
+			String.format(message.toString(), args), "bukkit.broadcast.admin");
 	}
 }

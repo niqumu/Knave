@@ -1,6 +1,6 @@
 package dev.niqumu.knave.player;
 
-import dev.niqumu.knave.checks.Check;
+import dev.niqumu.knave.check.Check;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
@@ -20,6 +20,6 @@ public class KnavePlayer {
 	public KnavePlayer(Player player) {
 		this.player = player;
 		this.checks = new ArrayList<>();
-		this.data = new PlayerData();
+		this.data = new PlayerData(player);
 	}
 }
