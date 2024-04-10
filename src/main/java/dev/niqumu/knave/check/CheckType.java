@@ -6,6 +6,7 @@ import lombok.Getter;
  * An enum of check types/categories. Check types can be disabled and customized individually
  */
 public enum CheckType {
+	COMBAT("Combat"),
 	FLIGHT("Flight"),
 	SPEED("Speed");
 

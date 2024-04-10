@@ -1,7 +1,7 @@
 package dev.niqumu.knave.check;
 
-import com.avaje.ebean.Update;
 import dev.niqumu.knave.Knave;
+import dev.niqumu.knave.check.impl.combat.HitboxA;
 import dev.niqumu.knave.check.impl.flight.SurvivalFlightA;
 import dev.niqumu.knave.player.KnavePlayer;
 import lombok.SneakyThrows;
@@ -16,6 +16,9 @@ public class CheckManager implements Listener {
 
 	public static final ArrayList<Class<? extends Check>> CHECK_CLASSES = new ArrayList<>();
 	static {
+
+		// Combat
+		CHECK_CLASSES.add(HitboxA.class);
 
 		// Flight
 		CHECK_CLASSES.add(SurvivalFlightA.class);
@@ -67,6 +70,11 @@ public class CheckManager implements Listener {
 
 			// Run the check and store the result
 			CheckResult result = check.onReceivePacket((Packet<?>) packet);
+
+			// We can ignore null results
+			if (result == null) {
+				return;
+			}
 
 			// todo - do more than just log failed checks
 			if (!result.isPassed()) {

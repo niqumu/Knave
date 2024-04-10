@@ -1,10 +1,11 @@
 package dev.niqumu.knave.check;
 
 import dev.niqumu.knave.player.KnavePlayer;
+import dev.niqumu.knave.util.MinecraftPhysics;
 import lombok.Getter;
 import net.minecraft.server.v1_8_R3.Packet;
 
-public abstract class Check {
+public abstract class Check implements MinecraftPhysics {
 
 	/**
 	 * The type of this check

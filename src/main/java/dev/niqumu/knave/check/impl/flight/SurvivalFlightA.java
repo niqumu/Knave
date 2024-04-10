@@ -79,12 +79,12 @@ public class SurvivalFlightA extends Check {
 		if (packet instanceof PacketPlayInFlying) {
 
 			// todo - investigate, sometimes happens when against a wall
-			if (player.getData().getMotionY() == 0.404445) {
+			if (player.getData().getMotionY() - 0.404445 < 0.01) {
 				return new CheckResult(true, null);
 			}
 
 			// The expected vertical motion of the player, calculated using vanilla constants
-			double expectedMotionY = MinecraftPhysics.JUMP_MOTION_BASE;
+			double expectedMotionY = JUMP_MOTION_BASE;
 
 			// If the player has jump boost, we need to account for it when calculating the expected height
 			//   of the jump, as it will increase their base jumping motion
@@ -94,7 +94,7 @@ public class SurvivalFlightA extends Check {
 				for (PotionEffect effect : player.getPlayer().getActivePotionEffects()) {
 					if (effect.getType().equals(PotionEffectType.JUMP)) {
 						int level = effect.getAmplifier() + 1;
-						expectedMotionY += level * MinecraftPhysics.JUMP_MOTION_POTION_MODIFIER;
+						expectedMotionY += level * JUMP_MOTION_POTION_MODIFIER;
 					}
 				}
 			}
@@ -102,7 +102,7 @@ public class SurvivalFlightA extends Check {
 			// How much the expected vertical motion differs from the actual vertical motion
 			double difference = Math.abs(expectedMotionY - player.getData().getMotionY());
 
-			if (difference > MinecraftPhysics.JUMP_003) {
+			if (difference > JUMP_003) {
 				return new CheckResult(false, String.format("Unexpected jumping vertical motion" +
 					"(expected %f, got %f instead)", expectedMotionY, player.getData().getMotionY()));
 			}
