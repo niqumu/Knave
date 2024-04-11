@@ -4,7 +4,6 @@ import dev.niqumu.knave.check.Check;
 import dev.niqumu.knave.check.CheckResult;
 import dev.niqumu.knave.check.CheckType;
 import dev.niqumu.knave.player.KnavePlayer;
-import dev.niqumu.knave.util.MinecraftPhysics;
 import net.minecraft.server.v1_8_R3.Packet;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
 import org.bukkit.potion.PotionEffect;
@@ -64,7 +63,7 @@ public class SurvivalFlightA extends Check {
 		}
 
 		// The check is only run when the player's ground state changes from true -> false
-		return player.getData().isOnGround() || !player.getData().isLastOnGround();
+		return player.getData().isOnGround() || !player.getHistory().get(1).isOnGround();
 	}
 
 	/**

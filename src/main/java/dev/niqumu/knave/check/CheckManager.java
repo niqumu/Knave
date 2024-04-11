@@ -6,6 +6,7 @@ import dev.niqumu.knave.check.impl.flight.SurvivalFlightA;
 import dev.niqumu.knave.player.KnavePlayer;
 import lombok.SneakyThrows;
 import net.minecraft.server.v1_8_R3.Packet;
+import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -57,8 +58,10 @@ public class CheckManager implements Listener {
 
 		KnavePlayer knavePlayer = Knave.INSTANCE.getPlayerManager().get(player);
 
-		// Update the player's data
-		knavePlayer.getData().update((Packet<?>) packet);
+		// Update the player's data on every flying packet
+		if (packet instanceof PacketPlayInFlying) {
+			knavePlayer.update((PacketPlayInFlying) packet);
+		}
 
 		// Iterate over all the player's checks
 		knavePlayer.getChecks().forEach(check -> {

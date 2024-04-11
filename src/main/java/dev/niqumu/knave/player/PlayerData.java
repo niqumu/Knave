@@ -8,21 +8,29 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+/**
+ * A container to store the state of a player's position, rotation, and ground state.
+ * <p>
+ * The {@link KnavePlayer} class updates the player's current PlayerData instance every time the client sends a
+ * flying packet. Additionally, the last 20 PlayerData snapshots are stored.
+ *
+ * @author niqumu
+ */
 public class PlayerData {
 
 	private final Player player;
 
 	@Getter
-	private double x, y, z, lastX, lastY, lastZ;
+	private double x, y, z;
 
 	@Getter
-	private double motionX, motionY, motionZ, lastMotionX, lastMotionY, lastMotionZ;
+	private double motionX, motionY, motionZ;
 
 	@Getter
-	private float yaw, pitch, lastYaw, lastPitch;
+	private float yaw, pitch;
 
 	@Getter
-	private boolean onGround, lastOnGround;
+	private boolean onGround;
 
 	@Getter
 	private boolean inLiquid, onLadder, underBlock;
@@ -32,18 +40,18 @@ public class PlayerData {
 		this.player = player;
 		Location playerLocation = player.getLocation();
 
-		this.x = this.lastX = playerLocation.getX();
-		this.y = this.lastY = playerLocation.getY();
-		this.z = this.lastZ = playerLocation.getZ();
+		this.x = playerLocation.getX();
+		this.y = playerLocation.getY();
+		this.z = playerLocation.getZ();
 
-		this.motionX = this.lastMotionX = player.getVelocity().getX();
-		this.motionY = this.lastMotionY = player.getVelocity().getY();
-		this.motionZ = this.lastMotionZ = player.getVelocity().getZ();
+		this.motionX = player.getVelocity().getX();
+		this.motionY = player.getVelocity().getY();
+		this.motionZ = player.getVelocity().getZ();
 
-		this.yaw = this.lastYaw = playerLocation.getYaw();
-		this.pitch =  this.lastPitch = playerLocation.getPitch();
+		this.yaw = playerLocation.getYaw();
+		this.pitch = playerLocation.getPitch();
 
-		this.onGround = this.lastOnGround = this.y % 1 == 0;
+		this.onGround = this.y % 1 == 0;
 	}
 
 	public void update(Packet<?> packet) {
@@ -55,31 +63,20 @@ public class PlayerData {
 	private void updatePacketPlayInFlying(PacketPlayInFlying packet) {
 
 		// The packet will always include information on the client-indicated ground state
-		this.lastOnGround = this.onGround;
 		this.onGround = packet.f();
 
 		// If the packet includes updated position information
 		if (packet.g()) {
 
-			// Update position information
-			this.lastX = this.x;
-			this.x = packet.a();
-
-			this.lastY = this.y;
-			this.y = packet.b();
-
-			this.lastZ = this.z;
-			this.z = packet.c();
-
 			// Update velocity information
-			this.lastMotionX = this.motionX;
-			this.motionX = this.x - this.lastX;
+			this.motionX = packet.a() - this.x;
+			this.motionY = packet.b() - this.y;
+			this.motionZ = packet.c() - this.z;
 
-			this.lastMotionY = this.motionY;
-			this.motionY = this.y - this.lastY;
-
-			this.lastMotionZ = this.motionZ;
-			this.motionZ = this.z - this.lastZ;
+			// Update position information
+			this.x = packet.a();
+			this.y = packet.b();
+			this.z = packet.c();
 
 			// Update the information on the player's whereabouts - water/ladder states, etc.
 			this.updateEnvironment();
@@ -87,10 +84,7 @@ public class PlayerData {
 
 		// If the packet includes updated rotation information
 		if (packet.h()) {
-			this.lastYaw = this.yaw;
 			this.yaw = packet.d();
-
-			this.lastPitch = this.pitch;
 			this.pitch = packet.e();
 		}
 	}
